@@ -1,46 +1,40 @@
 services:
-    db:
-        container_name: mongo
-        image: mongo:latest
-        ports:
-            - "27017:27017"
+  db:
+    container_name: mongo
+    image: mongo:latest
+    ports:
+      - "27017:27017"
 
-        networks:
-            fast-api:
-                ipv4_address: 170.1.1.10
+    networks:
+      fast-api:
+        ipv4_address: 170.1.1.10
 
-    api:
-        build:
-            context: ./app
-            dockerfile: Dockerfile
-        container_name: fast-api
-        volumes:
-           - .:/app
-            # - ./backend:/var/www/api
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fast-api
+    volumes:
+      - .:/app
+    working_dir: /app
+    stdin_open: true
+    environment:
+      - PORT=8080
+      - HOST=0.0.0.0
+    command: uvicorn fastapi:app --host 0.0.0.0 --port 8080
 
-        working_dir: /var/www/api
-        stdin_open: true
-        environment:
-            - PORT=8080
-            - HOST=0.0.0.0
-        command: /bin/sh -c "yarn && yarn watch"
+    ports:
+      - "8080:8080"
 
-        ports:
-            - "8080:8080"
+    networks:
+      fast-api:
+        ipv4_address: 170.1.1.20
 
-        networks:
-            fast-api:
-                ipv4_address: 170.1.1.20
-
-        depends_on:
-            - db
-
-
-# volumes:
-# drrm:
+    depends_on:
+      - db
 
 networks:
-    fast-api:
-        ipam:
-            config:
-                - subnet: 170.1.1.0/24
+  fast-api:
+    ipam:
+      config:
+        - subnet: 170.1.1.0/24
