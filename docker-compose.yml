@@ -15,14 +15,13 @@ services:
       dockerfile: Dockerfile
     container_name: fast-api
     volumes:
-      - .:/app
+      - ./app:/app  # Map the 'app' directory to '/app' inside the container
     working_dir: /app
     stdin_open: true
     environment:
       - PORT=8080
       - HOST=0.0.0.0
-    command: uvicorn fastapi:app --host 0.0.0.0 --port 8080
-
+    command: uvicorn main:app --host 0.0.0.0 --port 8080
     ports:
       - "8080:8080"
 
